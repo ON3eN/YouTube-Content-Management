@@ -1,0 +1,23 @@
+<!-- templates/header.html -->
+<header style="
+  background: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  font-family: 'Cairo', sans-serif;
+">
+  <!-- يمين: التنقل -->
+  <nav style="display: flex; gap: 1.5rem;">
+    <a href="{% url 'home' %}" style="text-decoration: none; color: #922f20;">الرئيسية</a>
+    <a href="{% url 'tasks' %}" style="text-decoration: none; color: #922f20;">قائمة المهام</a>
+  </nav>
+
+  <!-- يسار: معلومات المستخدم -->
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <span>{{ request.user.profile.get_وظائف_display }}</span>
+    <span>{{ request.user.username }}</span>
+    <img src="{% static 'img/bell.svg' %}" alt="تنبيهات" style="width: 22px;">
+  </div>
+</header>
