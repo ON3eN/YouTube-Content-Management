@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'workflow',
 ]
 
-# الوسطاء (Middlewares)
+# الوسطاء
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -45,14 +45,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# رابط ملف URL الرئيسي
+# ملف URL الرئيسي
 ROOT_URLCONF = 'YouTube_Content_Management.urls'
 
 # إعدادات القوالب
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # مجلد القوالب
+        'DIRS': [BASE_DIR / 'templates'],  # تعريف مجلد القوالب هنا
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,7 +68,7 @@ TEMPLATES = [
 # تطبيق WSGI
 WSGI_APPLICATION = 'YouTube_Content_Management.wsgi.application'
 
-# قاعدة البيانات (SQLite افتراضية)
+# قاعدة البيانات (SQLite مؤقتًا)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -76,7 +76,7 @@ DATABASES = {
     }
 }
 
-# تحقق من كلمات المرور
+# التحقق من كلمات المرور
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -92,9 +92,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# الإعدادات الدولية
-LANGUAGE_CODE = 'ar'  # اللغة العربية
-TIME_ZONE = 'Asia/Riyadh'  # توقيت الرياض
+# اللغة والتوقيت
+LANGUAGE_CODE = 'ar'
+TIME_ZONE = 'Asia/Riyadh'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
