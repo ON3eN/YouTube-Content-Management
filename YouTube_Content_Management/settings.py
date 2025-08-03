@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     # التطبيقات المخصصة
     'account',
     'workflow',
+    'youtuber',  # ✅ تمت إضافته
 ]
 
 # الوسطاء

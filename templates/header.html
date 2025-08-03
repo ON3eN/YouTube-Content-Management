@@ -11,7 +11,7 @@
   position: relative;
 ">
 
-  <!-- ░░ ░░ يسار: معلومات المستخدم (اسم + وظيفة) ░░ ░░ -->
+  <!-- ░░ ░░ يمين: معلومات المستخدم (اسم + وظيفة) ░░ ░░ -->
   <div style="position: absolute; right: 2rem; display: flex; align-items: center; gap: 1rem;">
     <span style="color: #444;">{{ request.user.profile.get_وظائف_display }}</span>
     <span style="color: #222; font-weight: 600;">{{ request.user.username }}</span>
@@ -30,15 +30,61 @@
       الرئيسية
     </a>
 
-    <a href="#" style="
-      text-decoration: none;
-      color: #922f20;
-      padding-bottom: 4px;
-      border-bottom: 2px solid transparent;
-      font-weight: 600;
-      transition: border-color 0.3s ease;
-    " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
-      قائمة المهام
-    </a>
+    {% if request.user.profile.الوظائف == 'youtuber' %}
+      <a href="{% url 'youtuber:tasks' %}" style="
+        text-decoration: none;
+        color: #922f20;
+        padding-bottom: 4px;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        transition: border-color 0.3s ease;
+      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+        قائمة المهام
+      </a>
+    {% elif request.user.profile.الوظائف == 'editor' %}
+      <a href="{% url 'editor:tasks' %}" style="
+        text-decoration: none;
+        color: #922f20;
+        padding-bottom: 4px;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        transition: border-color 0.3s ease;
+      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+        قائمة المهام
+      </a>
+    {% elif request.user.profile.الوظائف == 'thumbnailer' %}
+      <a href="{% url 'thumbnailer:tasks' %}" style="
+        text-decoration: none;
+        color: #922f20;
+        padding-bottom: 4px;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        transition: border-color 0.3s ease;
+      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+        قائمة المهام
+      </a>
+    {% elif request.user.profile.الوظائف == 'reviewer' %}
+      <a href="{% url 'reviewer:tasks' %}" style="
+        text-decoration: none;
+        color: #922f20;
+        padding-bottom: 4px;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        transition: border-color 0.3s ease;
+      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+        قائمة المهام
+      </a>
+    {% elif request.user.profile.الوظائف == 'publisher' %}
+      <a href="{% url 'publisher:tasks' %}" style="
+        text-decoration: none;
+        color: #922f20;
+        padding-bottom: 4px;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        transition: border-color 0.3s ease;
+      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+        قائمة المهام
+      </a>
+    {% endif %}
   </nav>
 </header>

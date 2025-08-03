@@ -18,6 +18,9 @@ urlpatterns = [
 
     # مسارات تطبيق خط الإنتاج
     path('workflow/', include('workflow.urls')),
+
+    # مسارات تطبيق اليوتيوبر
+    path('youtuber/', include('youtuber.urls')),  # ✅ تم ربط التطبيق هنا
 ]
 
 # دعم ملفات الوسائط (Media) في وضع التطوير
