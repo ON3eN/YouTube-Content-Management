@@ -3,14 +3,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-# استيراد login_view من تطبيق الحسابات
+# استيراد صفحة تسجيل الدخول لربطها بالصفحة الرئيسية
 from account.views import login_view
 
 urlpatterns = [
-    # الصفحة الرئيسية توجه مباشرة لتسجيل الدخول
+    # جعل الصفحة الرئيسية تفتح صفحة تسجيل الدخول
     path('', login_view, name='home'),
 
-    # لوحة التحكم
+    # لوحة تحكم Django
     path('admin/', admin.site.urls),
 
     # مسارات تطبيق الحسابات
@@ -20,6 +20,6 @@ urlpatterns = [
     path('workflow/', include('workflow.urls')),
 ]
 
-# دعم ملفات الوسائط (media) في بيئة التطوير
+# دعم ملفات الوسائط (Media) في وضع التطوير
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

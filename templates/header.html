@@ -1,6 +1,7 @@
+{% load static %}
 <!-- templates/header.html -->
 <header style="
-  background: white;
+  background-color: white;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -8,16 +9,34 @@
   border-bottom: 1px solid #ddd;
   font-family: 'Cairo', sans-serif;
 ">
-  <!-- يمين: التنقل -->
+
+  <!-- ░░ ░░ يمين: روابط التنقل ░░ ░░ -->
   <nav style="display: flex; gap: 1.5rem;">
-    <a href="{% url 'home' %}" style="text-decoration: none; color: #922f20;">الرئيسية</a>
-    <a href="{% url 'tasks' %}" style="text-decoration: none; color: #922f20;">قائمة المهام</a>
+    <a href="{% url 'workflow:home' %}" style="
+      text-decoration: none;
+      color: #922f20;
+      padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+      الرئيسية
+    </a>
+
+    <a href="#" style="
+      text-decoration: none;
+      color: #922f20;
+      padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+      قائمة المهام
+    </a>
   </nav>
 
-  <!-- يسار: معلومات المستخدم -->
+  <!-- ░░ ░░ يسار: معلومات المستخدم والتنبيهات ░░ ░░ -->
   <div style="display: flex; align-items: center; gap: 1rem;">
-    <span>{{ request.user.profile.get_وظائف_display }}</span>
-    <span>{{ request.user.username }}</span>
+    <span style="color: #444;">{{ request.user.profile.get_وظائف_display }}</span>
+    <span style="color: #222; font-weight: 600;">{{ request.user.username }}</span>
     <img src="{% static 'img/bell.svg' %}" alt="تنبيهات" style="width: 22px;">
   </div>
 </header>
