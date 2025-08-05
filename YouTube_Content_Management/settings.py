@@ -31,7 +31,11 @@ INSTALLED_APPS = [
     # التطبيقات المخصصة
     'account',
     'workflow',
-    'youtuber',  # ✅ تمت إضافته
+    'youtuber',
+    'editor',
+    'thumbnailer',
+    'reviewer',
+    'publisher',
 ]
 
 # الوسطاء

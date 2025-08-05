@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage
 
 @login_required
 def tasks_view(request):
-    return render(request, 'youtuber/tasks.html')  # تأكد إن الملف موجود
+    return render(request, 'editor/tasks.html')
 
 
 @login_required
@@ -15,9 +15,9 @@ def upload_video_view(request):
         fs = FileSystemStorage()
         filename = fs.save(video.name, video)
 
-        return render(request, 'youtuber/upload.html', {
+        return render(request, 'editor/upload.html', {
             'success': True,
             'filename': filename
         })
 
-    return render(request, 'youtuber/upload.html')
+    return render(request, 'editor/upload.html')

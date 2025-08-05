@@ -20,7 +20,13 @@ urlpatterns = [
     path('workflow/', include('workflow.urls')),
 
     # مسارات تطبيق اليوتيوبر
-    path('youtuber/', include('youtuber.urls')),  # ✅ تم ربط التطبيق هنا
+    path('youtuber/', include('youtuber.urls')),
+
+    # ✅ مسارات التطبيقات الجديدة
+    path('editor/', include('editor.urls')),
+    path('thumbnailer/', include('thumbnailer.urls')),
+    path('reviewer/', include('reviewer.urls')),
+    path('publisher/', include('publisher.urls')),
 ]
 
 # دعم ملفات الوسائط (Media) في وضع التطوير

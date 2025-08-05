@@ -1,0 +1,211 @@
+{% load static %}
+{% if user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>مهام مصمم الثمنيل</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #ffffff;
+    }
+
+    .main-wrapper {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 1rem;
+    }
+
+    .titles-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      background-color: #922f20;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      background: #f5f5f5;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+      padding: 2rem;
+      flex: 1 1 500px;
+      box-sizing: border-box;
+    }
+
+    .video-box {
+      position: relative;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 1rem 1.2rem 2.5rem;
+      margin-bottom: 1.2rem;
+      background-color: #ffffff;
+      transition: background-color 0.3s;
+    }
+
+    .video-box:hover {
+      background-color: #f8f8f8;
+    }
+
+    .video-box p {
+      margin: 0.4rem 0;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .video-box strong {
+      color: #000;
+    }
+
+    .download-btn {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      background-color: #922f20;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .download-btn:hover {
+      background-color: #7b251a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="file"],
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.9rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    input[type="file"] {
+      border: 1px solid #ccc;
+      background-color: #fdfdfd;
+      color: #555;
+    }
+
+    button[type="submit"] {
+      background-color: #922f20;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #7b251a;
+    }
+
+    .success-msg {
+      color: green;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .titles-wrapper {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'header.html' %}
+
+  <div class="main-wrapper">
+
+    <div class="titles-wrapper">
+      <div class="section-title">فيديوهات من اليوتيوبر</div>
+      <div class="section-title">رفع الثمنيل المصمم</div>
+    </div>
+
+    <div class="container">
+
+      <!-- بطاقة الفيديوهات الجديدة -->
+      <div class="card">
+        <div class="video-box">
+          <p><strong>عنوان:</strong> مراجعة منتج جديد</p>
+          <p><strong>المدة:</strong> 5:35 دقائق</p>
+          <p><strong>تاريخ الإرسال:</strong> 3 أغسطس</p>
+          <a href="{% static 'videos/test1.mp4' %}" download>
+            <button class="download-btn">تنزيل</button>
+          </a>
+        </div>
+
+        <div class="video-box">
+          <p><strong>عنوان:</strong> فلوق تسوق</p>
+          <p><strong>المدة:</strong> 7:20 دقائق</p>
+          <p><strong>تاريخ الإرسال:</strong> 1 أغسطس</p>
+          <a href="{% static 'videos/test2.mp4' %}" download>
+            <button class="download-btn">تنزيل</button>
+          </a>
+        </div>
+      </div>
+
+      <!-- بطاقة رفع الثمنيل المصمم -->
+      <div class="card">
+        {% if success %}
+          <div class="success-msg">✅ تم رفع الثمنيل بنجاح: {{ filename }}</div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" name="thumbnail" accept="image/*" required />
+          <button type="submit">رفع الثمنيل</button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
+{% else %}
+  <script>window.location.href = "{% url 'login' %}";</script>
+{% endif %}

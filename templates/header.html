@@ -1,24 +1,30 @@
 {% load static %}
-<!-- templates/header.html -->
+
 <header style="
-  background-color: #fef8f7; /* لون وردي فاتح جدًا */
+  background-color: #fef8f7;
   padding: 1rem 2rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid #ddd;
   font-family: 'Cairo', sans-serif;
   position: relative;
 ">
 
-  <!-- ░░ ░░ يمين: معلومات المستخدم (اسم + وظيفة) ░░ ░░ -->
+  <!-- يمين: الحساب -->
+  {% if request.user.is_authenticated %}
   <div style="position: absolute; right: 2rem; display: flex; align-items: center; gap: 1rem;">
-    <span style="color: #444;">{{ request.user.profile.get_وظائف_display }}</span>
-    <span style="color: #222; font-weight: 600;">{{ request.user.username }}</span>
+    <span style="color: #444;">
+      {{ request.user.الملف_الشخصي.get_وظيفة_display }}
+    </span>
+    <span style="color: #222; font-weight: 600;">
+      {{ request.user.username }}
+    </span>
   </div>
+  {% endif %}
 
-  <!-- ░░ ░░ وسط: روابط التنقل ░░ ░░ -->
-  <nav style="margin: 0 auto; display: flex; gap: 2rem;">
+  <!-- وسط: الروابط -->
+  <nav style="display: flex; gap: 2rem;">
     <a href="{% url 'workflow:home' %}" style="
       text-decoration: none;
       color: #922f20;
@@ -30,61 +36,65 @@
       الرئيسية
     </a>
 
-    {% if request.user.profile.الوظائف == 'youtuber' %}
-      <a href="{% url 'youtuber:tasks' %}" style="
-        text-decoration: none;
-        color: #922f20;
-        padding-bottom: 4px;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        transition: border-color 0.3s ease;
-      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
-        قائمة المهام
-      </a>
-    {% elif request.user.profile.الوظائف == 'editor' %}
-      <a href="{% url 'editor:tasks' %}" style="
-        text-decoration: none;
-        color: #922f20;
-        padding-bottom: 4px;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        transition: border-color 0.3s ease;
-      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
-        قائمة المهام
-      </a>
-    {% elif request.user.profile.الوظائف == 'thumbnailer' %}
-      <a href="{% url 'thumbnailer:tasks' %}" style="
-        text-decoration: none;
-        color: #922f20;
-        padding-bottom: 4px;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        transition: border-color 0.3s ease;
-      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
-        قائمة المهام
-      </a>
-    {% elif request.user.profile.الوظائف == 'reviewer' %}
-      <a href="{% url 'reviewer:tasks' %}" style="
-        text-decoration: none;
-        color: #922f20;
-        padding-bottom: 4px;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        transition: border-color 0.3s ease;
-      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
-        قائمة المهام
-      </a>
-    {% elif request.user.profile.الوظائف == 'publisher' %}
-      <a href="{% url 'publisher:tasks' %}" style="
-        text-decoration: none;
-        color: #922f20;
-        padding-bottom: 4px;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        transition: border-color 0.3s ease;
-      " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
-        قائمة المهام
-      </a>
+    {% if request.user.is_authenticated %}
+      {% with الوظيفة=request.user.الملف_الشخصي.الوظيفة %}
+        {% if الوظيفة == 'youtuber' %}
+          <a href="{% url 'youtuber:youtuber_tasks' %}" style="
+            text-decoration: none;
+            color: #922f20;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+          " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+            قائمة المهام
+          </a>
+        {% elif الوظيفة == 'editor' %}
+          <a href="{% url 'editor:editor_tasks' %}" style="
+            text-decoration: none;
+            color: #922f20;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+          " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+            قائمة المهام
+          </a>
+        {% elif الوظيفة == 'thumbnailer' %}
+          <a href="{% url 'thumbnailer:thumbnailer_tasks' %}" style="
+            text-decoration: none;
+            color: #922f20;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+          " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+            قائمة المهام
+          </a>
+        {% elif الوظيفة == 'reviewer' %}
+          <a href="{% url 'reviewer:reviewer_tasks' %}" style="
+            text-decoration: none;
+            color: #922f20;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+          " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+            قائمة المهام
+          </a>
+        {% elif الوظيفة == 'publisher' %}
+          <a href="{% url 'publisher:publisher_tasks' %}" style="
+            text-decoration: none;
+            color: #922f20;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+          " onmouseover="this.style.borderColor='#922f20'" onmouseout="this.style.borderColor='transparent'">
+            قائمة المهام
+          </a>
+        {% endif %}
+      {% endwith %}
     {% endif %}
   </nav>
 </header>

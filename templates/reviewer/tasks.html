@@ -1,0 +1,389 @@
+{% load static %}
+{% if user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>مهام المراجع</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #ffffff;
+    }
+
+    .main-wrapper {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 1rem;
+    }
+
+    .titles-wrapper {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      background-color: #922f20;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      flex: 1 1 500px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+      padding: 2rem;
+      position: relative;
+      box-sizing: border-box;
+      min-height: 300px;
+    }
+
+    .video-box {
+      position: relative;
+      height: 100%;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .video-box .status-message {
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.1rem;
+      padding: 2rem 1rem;
+      border-radius: 12px;
+      animation: fadeIn 0.4s ease forwards;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .confirmed {
+      background-color: #e6f8e6;
+      color: #1b5e20;
+    }
+
+    .notes-sent {
+      background-color: #ffe5e5;
+      color: #7f1d1d;
+      animation: breathe 3s ease-in-out infinite, fadeIn 0.5s ease forwards;
+    }
+
+    .info {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .eye-icon {
+      width: 28px;
+      height: 28px;
+      background-color: #922f20;
+      border-radius: 50%;
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .eye-icon::before {
+      content: '';
+      width: 14px;
+      height: 14px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+
+    .confirm-btn, .edit-btn {
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .confirm-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .edit-btn {
+      background-color: #ff5e5e;
+      color: white;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .modal textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 0.8rem;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .send-btn, .cancel-btn {
+      flex: 1;
+      margin: 0 0.3rem;
+      padding: 0.7rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .send-btn {
+      background-color: #d32f2f;
+      color: white;
+    }
+
+    .cancel-btn {
+      background-color: #bdbdbd;
+      color: white;
+    }
+
+    .sent-message {
+      display: none;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1.5rem;
+      margin-inline: auto;
+      max-width: 600px;
+      font-weight: bold;
+      position: relative;
+      transition: opacity 0.5s ease;
+    }
+
+    .sent-message.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .sent-message.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    .sent-message::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 4px;
+      width: 100%;
+      animation: progressBar 8s linear forwards;
+    }
+
+    .sent-message.success::after {
+      background-color: #c3e6cb;
+    }
+
+    .sent-message.error::after {
+      background-color: #f5c6cb;
+    }
+
+    .sent-message.show {
+      display: block;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes breathe {
+      0% { background-color: #ffe3e3; }
+      50% { background-color: #fff0f0; }
+      100% { background-color: #ffe3e3; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes progressBar {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+  </style>
+</head>
+<body>
+
+{% include 'header.html' %}
+
+<div class="main-wrapper">
+  <div class="titles-wrapper">
+    <div class="section-title">الثمنيل المصمم</div>
+    <div class="section-title">الفيديو المُمنتج</div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="video-box" id="videoBox1">
+        <div class="eye-icon" onclick="previewImage()"></div>
+        <div class="content">
+          <p class="info"><strong>مدة العمل:</strong> 4 ساعات و10 دقائق</p>
+          <p class="info"><strong>الحجم:</strong> 3.2 ميغابايت</p>
+          <p class="info"><strong>تاريخ الرفع:</strong> 3 أغسطس</p>
+          <div class="actions">
+            <button class="confirm-btn" onclick="sendConfirmation(this, 'thumbnail')">تأكيد</button>
+            <button class="edit-btn" onclick="showEditModal(this)">تعديل</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="video-box" id="videoBox2">
+        <div class="eye-icon" onclick="previewVideo()"></div>
+        <div class="content">
+          <p class="info"><strong>مدة العمل:</strong> 6 ساعات و20 دقيقة</p>
+          <p class="info"><strong>الحجم:</strong> 250 ميغابايت</p>
+          <p class="info"><strong>تاريخ الرفع:</strong> 3 أغسطس</p>
+          <div class="actions">
+            <button class="confirm-btn" onclick="sendConfirmation(this, 'video')">تأكيد</button>
+            <button class="edit-btn" onclick="showEditModal(this)">تعديل</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="editModal">
+    <div class="modal">
+      <h3>كتابة الملاحظات</h3>
+      <textarea placeholder="اكتب ملاحظاتك هنا..."></textarea>
+      <div class="modal-actions">
+        <button class="send-btn" onclick="confirmEdit()">إرسال</button>
+        <button class="cancel-btn" onclick="closeModal()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sent-message" id="sentMsg"></div>
+</div>
+
+<script>
+  let currentBox = null;
+
+  function previewVideo() {
+    alert("معاينة الفيديو الممنتج...");
+  }
+
+  function previewImage() {
+    alert("معاينة الثمنيل المصمم...");
+  }
+
+  function showEditModal(button) {
+    currentBox = button.closest('.video-box');
+    document.getElementById("editModal").classList.add("show");
+  }
+
+  function closeModal() {
+    document.getElementById("editModal").classList.remove("show");
+  }
+
+  function confirmEdit() {
+    closeModal();
+    setTimeout(() => {
+      if (currentBox) {
+        currentBox.innerHTML = `<div class="status-message notes-sent">📌 تم إرسال ملاحظاتك</div>`;
+      }
+      setTimeout(() => {
+        showMessage("📌 تم إرسال ملاحظاتك بنجاح", "error");
+      }, 500);
+    }, 500);
+  }
+
+  function sendConfirmation(button, type) {
+    const box = button.closest('.video-box');
+    box.innerHTML = `<div class="status-message confirmed">✅ ${type === 'thumbnail' ? 'تم التأكيد على الثمنيل' : 'تم التأكيد على الفيديو'}</div>`;
+    setTimeout(() => {
+      showMessage(`✅ ${type === 'thumbnail' ? 'تم التأكيد على الثمنيل' : 'تم التأكيد على الفيديو'} بنجاح`, "success");
+    }, 300);
+  }
+
+  function showMessage(text, type) {
+    const msg = document.getElementById("sentMsg");
+    msg.className = "sent-message " + type;
+    msg.innerText = text;
+    msg.classList.add("show");
+    setTimeout(() => {
+      msg.classList.remove("show");
+      setTimeout(() => {
+        msg.style.display = "none";
+        msg.className = "sent-message";
+      }, 500);
+    }, 8000);
+  }
+</script>
+</body>
+</html>
+{% else %}
+  <script>window.location.href = "{% url 'login' %}";</script>
+{% endif %}
