@@ -1,0 +1,140 @@
+{% load static %}
+{% if user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>مهام مسؤول النشر</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #fffaf9;
+      color: #1e1e1e;
+    }
+
+    .main-wrapper {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 1rem;
+    }
+
+    .titles-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      background-color: #893b2e;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      padding: 2rem 1.5rem 4rem;
+      flex: 1 1 500px;
+      position: relative;
+      box-sizing: border-box;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .media {
+      width: 100%;
+      border-radius: 10px;
+      background: #000;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      max-height: 260px;
+    }
+
+    .download-btn {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.7rem 1.5rem;
+      background-color: #4CAF50;
+      color: white;
+      font-family: 'Cairo', sans-serif;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .download-btn:hover {
+      background-color: #3d9443;
+    }
+
+    @media (max-width: 768px) {
+      .titles-wrapper {
+        flex-direction: column;
+      }
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'header.html' %}
+
+  <div class="main-wrapper">
+    <div class="titles-wrapper">
+      <div class="section-title">الثمنيل المُصمم</div>
+      <div class="section-title">الفيديو المُمنتج</div>
+    </div>
+
+    <div class="container">
+      <!-- بطاقة الفيديو -->
+      <div class="card">
+        <video class="media" controls>
+          <source src="{% static 'media/sample.mp4' %}" type="video/mp4">
+          المتصفح لا يدعم تشغيل الفيديو.
+        </video>
+        <a href="{% static 'media/sample.mp4' %}" download>
+          <button class="download-btn">تنزيل الفيديو</button>
+        </a>
+      </div>
+
+      <!-- بطاقة الثمنيل -->
+      <div class="card">
+        <img src="{% static 'media/sample.jpg' %}" alt="صورة الثمنيل" class="media"/>
+        <a href="{% static 'media/sample.jpg' %}" download>
+          <button class="download-btn">تنزيل الصورة</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+{% else %}
+<script>window.location.href = "{% url 'login' %}";</script>
+{% endif %}

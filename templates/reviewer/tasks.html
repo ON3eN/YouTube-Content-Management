@@ -6,12 +6,12 @@
   <meta charset="UTF-8" />
   <title>مهام المراجع</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Cairo', sans-serif;
-      background-color: #ffffff;
+      background-color: #fffaf9;
     }
 
     .main-wrapper {
@@ -23,12 +23,13 @@
     .titles-wrapper {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     .section-title {
-      background-color: #922f20;
+      background-color: #893b2e;
       color: white;
       font-size: 1.3rem;
       font-weight: bold;
@@ -36,7 +37,7 @@
       border-radius: 10px;
       text-align: center;
       flex: 1;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .container {
@@ -47,63 +48,71 @@
     }
 
     .card {
-      flex: 1 1 500px;
       background: #f9f9f9;
       border-radius: 12px;
       box-shadow: 0 6px 15px rgba(0,0,0,0.06);
       padding: 2rem;
-      position: relative;
+      flex: 1 1 500px;
       box-sizing: border-box;
-      min-height: 300px;
+      position: relative;
+      min-height: 280px;
+      overflow: hidden;
     }
 
     .video-box {
-      position: relative;
-      height: 100%;
-      border-radius: 12px;
-      background: #ffffff;
+      background-color: #ffffff;
       border: 1px solid #e0e0e0;
-      padding: 1.5rem;
-      box-sizing: border-box;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .video-box .status-message {
-      font-weight: bold;
-      text-align: center;
-      font-size: 1.1rem;
-      padding: 2rem 1rem;
       border-radius: 12px;
-      animation: fadeIn 0.4s ease forwards;
-      flex-grow: 1;
+      padding: 1.5rem;
+      position: relative;
+      box-sizing: border-box;
+      height: 100%;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .video-box.dimmed,
+    .video-box.notes-sent {
       display: flex;
-      align-items: center;
       justify-content: center;
-      margin-top: 1rem;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+      height: 100%;
+      animation: fadeIn 0.5s ease forwards;
     }
 
-    .confirmed {
-      background-color: #e6f8e6;
-      color: #1b5e20;
+    .video-box.dimmed {
+      background-color: #e9fbe9;
+      color: #155724;
     }
 
-    .notes-sent {
-      background-color: #ffe5e5;
-      color: #7f1d1d;
+    .video-box.notes-sent {
+      background-color: #fff0f0;
+      color: #721c24;
       animation: breathe 3s ease-in-out infinite, fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes breathe {
+      0% { background-color: #ffe3e3; }
+      50% { background-color: #fff0f0; }
+      100% { background-color: #ffe3e3; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .info {
       font-size: 1rem;
-      margin-bottom: 0.5rem;
+      margin: 0.5rem 0;
     }
 
     .eye-icon {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       background-color: #922f20;
       border-radius: 50%;
       position: absolute;
@@ -113,20 +122,25 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      z-index: 3;
     }
 
     .eye-icon::before {
       content: '';
-      width: 14px;
-      height: 14px;
-      background: white;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
+      background: white;
+      transition: 0.3s ease;
     }
 
+    .eye-icon:hover::before {
+      height: 5px;
+    }
     .actions {
       display: flex;
       justify-content: space-between;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
 
     .confirm-btn, .edit-btn {
@@ -144,18 +158,20 @@
     }
 
     .edit-btn {
-      background-color: #ff5e5e;
+      background-color: #ff6666;
       color: white;
     }
 
     .overlay {
-      display: none;
       position: fixed;
       top: 0; right: 0; bottom: 0; left: 0;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(1px);
+      display: none;
       align-items: center;
-      z-index: 9999;
+      justify-content: center;
+      animation: fadeIn 0.3s ease forwards;
+      z-index: 10;
     }
 
     .overlay.show {
@@ -168,125 +184,156 @@
       border-radius: 12px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+      animation: fadeIn 0.5s ease;
     }
 
     .modal textarea {
       width: 100%;
-      height: 120px;
+      height: 100px;
+      resize: none;
       margin-top: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 0.8rem;
       font-family: 'Cairo', sans-serif;
+      padding: 1rem;
     }
 
     .modal-actions {
+      margin-top: 1.5rem;
       display: flex;
       justify-content: space-between;
-      margin-top: 1rem;
     }
 
     .send-btn, .cancel-btn {
-      flex: 1;
-      margin: 0 0.3rem;
-      padding: 0.7rem 1rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
+      padding: 0.6rem 1.2rem;
       font-family: 'Cairo', sans-serif;
+      border-radius: 6px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
     }
 
     .send-btn {
-      background-color: #d32f2f;
+      background-color: #4CAF50;
       color: white;
     }
 
     .cancel-btn {
-      background-color: #bdbdbd;
-      color: white;
+      background-color: #ccc;
     }
 
-    .sent-message {
-      display: none;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      margin-top: 1.5rem;
-      margin-inline: auto;
-      max-width: 600px;
-      font-weight: bold;
-      position: relative;
-      transition: opacity 0.5s ease;
-    }
-
-    .sent-message.success {
+    .toast {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.2rem;
       background-color: #d4edda;
       color: #155724;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+      min-width: 220px;
     }
 
-    .sent-message.error {
-      background-color: #f8d7da;
-      color: #721c24;
-      animation: breathe 3s ease-in-out infinite;
+    .toast.show {
+      opacity: 1;
     }
 
-    .sent-message::after {
+    .toast::after {
       content: "";
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      height: 4px;
-      width: 100%;
-      animation: progressBar 8s linear forwards;
-    }
-
-    .sent-message.success::after {
-      background-color: #c3e6cb;
-    }
-
-    .sent-message.error::after {
-      background-color: #f5c6cb;
-    }
-
-    .sent-message.show {
       display: block;
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    @keyframes breathe {
-      0% { background-color: #ffe3e3; }
-      50% { background-color: #fff0f0; }
-      100% { background-color: #ffe3e3; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      height: 3px;
+      background-color: #4CAF50;
+      margin-top: 0.4rem;
+      animation: progressBar 8s linear forwards;
     }
 
     @keyframes progressBar {
       from { width: 100%; }
       to { width: 0%; }
     }
+
+    .preview-modal {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .preview-modal.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .preview-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 800px;
+      max-height: 80vh;
+      text-align: center;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .preview-content video,
+    .preview-content img {
+      max-width: 100%;
+      max-height: 70vh;
+      margin-bottom: 1rem;
+    }
+
+    .ok-btn {
+      padding: 0.6rem 2rem;
+      font-family: 'Cairo', sans-serif;
+      border-radius: 8px;
+      font-weight: bold;
+      border: none;
+      background-color: #922f20;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  {% include 'header.html' %}
 
-{% include 'header.html' %}
+  <div class="main-wrapper">
+    <div class="titles-wrapper">
+      <div class="section-title">الفيديو المُمنتج</div>
+      <div class="section-title">الثمنيل المُصمم</div>
+    </div>
 
-<div class="main-wrapper">
-  <div class="titles-wrapper">
-    <div class="section-title">الثمنيل المصمم</div>
-    <div class="section-title">الفيديو المُمنتج</div>
-  </div>
+    <div class="container">
+      <!-- بطاقة الفيديو -->
+      <div class="card">
+        <div class="video-box" id="videoBox1">
+          <div class="eye-icon" onclick="previewVideo()"></div>
+          <p class="info"><strong>مدة العمل:</strong> 6 ساعات و20 دقيقة</p>
+          <p class="info"><strong>الحجم:</strong> 250 ميغابايت</p>
+          <p class="info"><strong>تاريخ الرفع:</strong> 3 أغسطس</p>
+          <div class="actions">
+            <button class="confirm-btn" onclick="sendConfirmation(this, 'video')">تأكيد</button>
+            <button class="edit-btn" onclick="showEditModal(this)">تعديل</button>
+          </div>
+        </div>
+      </div>
 
-  <div class="container">
-    <div class="card">
-      <div class="video-box" id="videoBox1">
-        <div class="eye-icon" onclick="previewImage()"></div>
-        <div class="content">
+      <!-- بطاقة الثمنيل -->
+      <div class="card">
+        <div class="video-box" id="videoBox2">
+          <div class="eye-icon" onclick="previewImage()"></div>
           <p class="info"><strong>مدة العمل:</strong> 4 ساعات و10 دقائق</p>
           <p class="info"><strong>الحجم:</strong> 3.2 ميغابايت</p>
           <p class="info"><strong>تاريخ الرفع:</strong> 3 أغسطس</p>
@@ -298,46 +345,31 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="video-box" id="videoBox2">
-        <div class="eye-icon" onclick="previewVideo()"></div>
-        <div class="content">
-          <p class="info"><strong>مدة العمل:</strong> 6 ساعات و20 دقيقة</p>
-          <p class="info"><strong>الحجم:</strong> 250 ميغابايت</p>
-          <p class="info"><strong>تاريخ الرفع:</strong> 3 أغسطس</p>
-          <div class="actions">
-            <button class="confirm-btn" onclick="sendConfirmation(this, 'video')">تأكيد</button>
-            <button class="edit-btn" onclick="showEditModal(this)">تعديل</button>
-          </div>
+    <!-- نافذة الملاحظات -->
+    <div class="overlay" id="editModal">
+      <div class="modal">
+        <h3>كتابة الملاحظات</h3>
+        <textarea placeholder="اكتب ملاحظاتك هنا..."></textarea>
+        <div class="modal-actions">
+          <button class="send-btn" onclick="confirmEdit()">إرسال</button>
+          <button class="cancel-btn" onclick="closeModal()">إلغاء</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="overlay" id="editModal">
-    <div class="modal">
-      <h3>كتابة الملاحظات</h3>
-      <textarea placeholder="اكتب ملاحظاتك هنا..."></textarea>
-      <div class="modal-actions">
-        <button class="send-btn" onclick="confirmEdit()">إرسال</button>
-        <button class="cancel-btn" onclick="closeModal()">إلغاء</button>
+    <!-- التوست -->
+    <div class="toast" id="toastMsg"></div>
+
+    <!-- نافذة المعاينة -->
+    <div id="previewModal" class="preview-modal" onclick="closePreview()">
+      <div class="preview-content" onclick="event.stopPropagation()">
+        <!-- سيتم تعبئته من JS -->
+        <button class="ok-btn" onclick="closePreview()">حسنًا</button>
       </div>
     </div>
   </div>
-
-  <div class="sent-message" id="sentMsg"></div>
-</div>
-
 <script>
   let currentBox = null;
-
-  function previewVideo() {
-    alert("معاينة الفيديو الممنتج...");
-  }
-
-  function previewImage() {
-    alert("معاينة الثمنيل المصمم...");
-  }
 
   function showEditModal(button) {
     currentBox = button.closest('.video-box');
@@ -349,41 +381,82 @@
   }
 
   function confirmEdit() {
-    closeModal();
+    const modal = document.getElementById("editModal");
+    modal.classList.remove("show");
+
     setTimeout(() => {
       if (currentBox) {
-        currentBox.innerHTML = `<div class="status-message notes-sent">📌 تم إرسال ملاحظاتك</div>`;
+        currentBox.classList.add("notes-sent");
+        currentBox.innerHTML = "تم إرسال ملاحظاتك";
       }
+
+      // إظهار التوست بعد انتهاء الإغلاق
       setTimeout(() => {
-        showMessage("📌 تم إرسال ملاحظاتك بنجاح", "error");
-      }, 500);
-    }, 500);
+        showToast("📌 تم إرسال ملاحظاتك بنجاح");
+      }, 600);
+    }, 400);
   }
 
   function sendConfirmation(button, type) {
-    const box = button.closest('.video-box');
-    box.innerHTML = `<div class="status-message confirmed">✅ ${type === 'thumbnail' ? 'تم التأكيد على الثمنيل' : 'تم التأكيد على الفيديو'}</div>`;
+    const box = button.closest(".video-box");
+    box.classList.add("dimmed");
+    box.innerHTML = type === "thumbnail"
+      ? "تم التأكيد على الثمنيل"
+      : "تم التأكيد على الفيديو";
+
+    const msg = type === "thumbnail"
+      ? "✅ تم التأكيد على الثمنيل بنجاح"
+      : "✅ تم التأكيد على الفيديو بنجاح";
+
     setTimeout(() => {
-      showMessage(`✅ ${type === 'thumbnail' ? 'تم التأكيد على الثمنيل' : 'تم التأكيد على الفيديو'} بنجاح`, "success");
-    }, 300);
+      showToast(msg);
+    }, 500);
   }
 
-  function showMessage(text, type) {
-    const msg = document.getElementById("sentMsg");
-    msg.className = "sent-message " + type;
-    msg.innerText = text;
-    msg.classList.add("show");
+  function showToast(message) {
+    const toast = document.getElementById("toastMsg");
+    toast.textContent = message;
+    toast.classList.add("show");
+
     setTimeout(() => {
-      msg.classList.remove("show");
-      setTimeout(() => {
-        msg.style.display = "none";
-        msg.className = "sent-message";
-      }, 500);
-    }, 8000);
+      toast.classList.remove("show");
+    }, 8000); // نفس مدة شريط التقدم
+  }
+
+  function previewVideo() {
+    const modal = document.getElementById("previewModal");
+    const content = modal.querySelector(".preview-content");
+    content.innerHTML = `
+      <video controls autoplay>
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        المتصفح لا يدعم تشغيل الفيديو.
+      </video>
+      <button class="ok-btn" onclick="closePreview()">حسنًا</button>
+    `;
+    modal.classList.add("show");
+  }
+
+  function previewImage() {
+    const modal = document.getElementById("previewModal");
+    const content = modal.querySelector(".preview-content");
+    content.innerHTML = `
+      <img src="https://via.placeholder.com/800x450" alt="الثمنيل">
+      <button class="ok-btn" onclick="closePreview()">حسنًا</button>
+    `;
+    modal.classList.add("show");
+  }
+
+  function closePreview() {
+    const modal = document.getElementById("previewModal");
+    modal.classList.remove("show");
+
+    setTimeout(() => {
+      modal.querySelector(".preview-content").innerHTML = "";
+    }, 400); // مهلة تلاشي
   }
 </script>
 </body>
 </html>
 {% else %}
-  <script>window.location.href = "{% url 'login' %}";</script>
+<script>window.location.href = "{% url 'login' %}";</script>
 {% endif %}
