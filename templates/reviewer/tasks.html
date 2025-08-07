@@ -167,15 +167,18 @@
       top: 0; right: 0; bottom: 0; left: 0;
       background-color: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(1px);
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
-      animation: fadeIn 0.3s ease forwards;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
       z-index: 10;
     }
 
     .overlay.show {
-      display: flex;
+      opacity: 1;
+      visibility: visible;
     }
 
     .modal {
@@ -195,7 +198,19 @@
       margin-top: 1rem;
       font-family: 'Cairo', sans-serif;
       padding: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #fcfcfc;
+      transition: border-color 0.3s ease;
     }
+
+    .modal textarea:focus {
+      outline: none;
+      border-color: #922f20;
+      background-color: #fff;
+    }
+
 
     .modal-actions {
       margin-top: 1.5rem;
@@ -221,10 +236,46 @@
       background-color: #ccc;
     }
 
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+
+    .detail-block {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .detail-block .label {
+      display: block;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .detail-block .value {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .notes-sent {
+      text-align: left;
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-top: 1rem;
+      color: #822c2c;
+      padding-right: 1rem;
+    }
+
     .toast {
       position: fixed;
-      top: 1.2rem;
-      right: 1.2rem;
+      bottom: 1.5rem;
+      right: 1.5rem;
       background-color: #d4edda;
       color: #155724;
       padding: 0.7rem 1rem;
@@ -258,40 +309,41 @@
 
     .preview-modal {
       position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      top: 0; right: 0; bottom: 0; left: 0;
       background: rgba(0, 0, 0, 0.5);
-      display: none;
+      display: flex;
       justify-content: center;
       align-items: center;
       z-index: 999;
       opacity: 0;
-      transition: opacity 0.4s ease;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
     }
 
     .preview-modal.show {
       display: flex;
       opacity: 1;
+      visibility: visible;
     }
 
     .preview-content {
       background: white;
       padding: 2rem;
       border-radius: 12px;
-      width: 80%;
-      max-width: 800px;
-      max-height: 80vh;
-      text-align: center;
+      width: 90%;
+      height: auto;
+      max-height: 85vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
       animation: fadeIn 0.4s ease forwards;
     }
 
     .preview-content video,
     .preview-content img {
-      max-width: 100%;
+      width: 100%;
+      height: auto;
       max-height: 70vh;
-      margin-bottom: 1rem;
+      display: block;
+      border-radius: 12px;
     }
 
     .ok-btn {
@@ -303,6 +355,8 @@
       background-color: #922f20;
       color: white;
       cursor: pointer;
+      display: block;
+      margin: 1.5rem auto 0 auto;
     }
   </style>
 </head>
@@ -381,21 +435,37 @@
   }
 
   function confirmEdit() {
-    const modal = document.getElementById("editModal");
-    modal.classList.remove("show");
+  const textarea = document.querySelector('#editModal textarea');
+  const notes = textarea.value.trim();
 
-    setTimeout(() => {
-      if (currentBox) {
-        currentBox.classList.add("notes-sent");
-        currentBox.innerHTML = "تم إرسال ملاحظاتك";
+  const modal = document.getElementById("editModal");
+  modal.classList.remove("show");
+
+  setTimeout(() => {
+    if (currentBox) {
+      currentBox.classList.add("notes-sent");
+      const message = document.createElement("div");
+      message.classList.add("notes-sent");
+      message.textContent = "تم إرسال ملاحظاتك";
+
+      const actions = currentBox.querySelector(".actions");
+      if (actions) {
+        actions.remove();
       }
 
-      // إظهار التوست بعد انتهاء الإغلاق
-      setTimeout(() => {
-        showToast("📌 تم إرسال ملاحظاتك بنجاح");
-      }, 600);
-    }, 400);
-  }
+
+      const infoContainer = document.createElement("div");
+      infoContainer.classList.add("notes-sent");
+      infoContainer.textContent = "تم إرسال ملاحظاتك";
+      currentBox.querySelector(".actions").after(infoContainer);
+
+    }
+
+    setTimeout(() => {
+      showToast("📌 تم إرسال ملاحظاتك بنجاح");
+    }, 600);
+  }, 400);
+}
 
   function sendConfirmation(button, type) {
     const box = button.closest(".video-box");
@@ -454,6 +524,18 @@
       modal.querySelector(".preview-content").innerHTML = "";
     }, 400); // مهلة تلاشي
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const textarea = document.querySelector("#editModal textarea");
+  const sendBtn = document.querySelector("#editModal .send-btn");
+
+  textarea.addEventListener("input", () => {
+    const hasText = textarea.value.trim().length > 0;
+    sendBtn.disabled = !hasText;
+    sendBtn.style.opacity = hasText ? "1" : "0.5";
+    sendBtn.style.cursor = hasText ? "pointer" : "not-allowed";
+  });
+});
 </script>
 </body>
 </html>
