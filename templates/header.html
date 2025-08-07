@@ -15,7 +15,7 @@
   {% if request.user.is_authenticated %}
   <div style="position: absolute; right: 2rem; display: flex; align-items: center; gap: 1rem;">
     <span style="color: #444;">
-      {{ request.user.الملف_الشخصي.get_وظيفة_display }}
+      {{ request.user.profile.get_وظيفة_display }}
     </span>
     <span style="color: #222; font-weight: 600;">
       {{ request.user.username }}
@@ -37,7 +37,7 @@
     </a>
 
     {% if request.user.is_authenticated %}
-      {% with الوظيفة=request.user.الملف_الشخصي.الوظيفة %}
+      {% with الوظيفة=request.user.profile.الوظيفة %}
         {% if الوظيفة == 'youtuber' %}
           <a href="{% url 'youtuber:youtuber_tasks' %}" style="
             text-decoration: none;

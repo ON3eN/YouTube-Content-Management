@@ -1,0 +1,31 @@
+<div class="chat-box-wrapper">
+  <div class="chat-wrapper">
+    <div class="chat-header">الدردشة الجماعية</div>
+
+    <div class="chat-box" id="chatBox">
+      {% for message in messages %}
+        {% with message.sender.profile.الوظيفة as role %}
+          <div class="message role-bg {{ role }} {% if message.sender == user %}own{% else %}other{% endif %}">
+            <div class="sender-name">
+              <span class="username {{ role }}">
+                {{ message.sender.username }} - {{ message.sender.profile.get_الوظيفة_display }}
+              </span>
+            </div>
+            <div class="message-content">{{ message.content }}</div>
+          </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+    <form class="chat-form" method="post" action="{% url 'chat:chat_home' %}">
+      {% csrf_token %}
+      <input type="text" name="نص" placeholder="اكتب رسالتك..." required />
+      <button type="submit">إرسال</button>
+    </form>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chatBox');
+    chatBox.scrollTop = chatBox.scrollHeight;
+  </script>
+</div>

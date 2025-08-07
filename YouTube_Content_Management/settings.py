@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'thumbnailer',
     'reviewer',
     'publisher',
+    'chat',
 ]
 
 # الوسطاء
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'YouTube_Content_Management.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # مجلد القوالب
+        'DIRS': [BASE_DIR / 'templates'],  # مجلد القوالب 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,3 +116,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # نوع المفتاح الافتراضي
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ✅ مسار تسجيل الدخول الافتراضي عند استخدام @login_required
+LOGIN_URL = '/account/login/'

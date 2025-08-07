@@ -4,130 +4,323 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>منصة إدارة اليوتيوب</title>
+  <title>الرئيسية</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      background: #fffaf9;
       font-family: 'Cairo', sans-serif;
+      background-color: #fff7f5;
+      color: #1e1e1e;
     }
 
     .container {
-      padding: 2rem;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1rem;
     }
 
-    .labels-row {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      background: #893b2e; /* أحمر غامق */
+    .top-section {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      flex: 1;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      background-color: #7a2e1d;
+      color: white;
       padding: 1rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      text-align: center;
+    }
+
+    .card-body {
+      padding: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === الدردشة === */
+    .chat-messages {
+      padding: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .chat-message {
+      display: flex;
+      flex-direction: column;
+      max-width: 90%;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      align-self: flex-start;
+    }
+
+    .chat-message.my-message {
+      background-color: #e0e0e0;
+      align-self: flex-end;
+    }
+
+    .chat-message.youtuber { background-color: #ffe5e5; }
+    .chat-message.editor { background-color: #f3e5f5; }
+    .chat-message.thumbnailer { background-color: #e3f2fd; }
+    .chat-message.reviewer { background-color: #e8f5e9; }
+    .chat-message.publisher { background-color: #fff9e1; }
+
+    .message-bubble {
+      font-size: 0.95rem;
+      color: #222;
+    }
+
+    .sender-name {
+      font-weight: bold;
+      margin-bottom: 0.2rem;
+    }
+
+    .sender-name.youtuber { color: #e53935; }
+    .sender-name.editor { color: #9c27b0; }
+    .sender-name.thumbnailer { color: #2196f3; }
+    .sender-name.reviewer { color: #4caf50; }
+    .sender-name.publisher { color: #f9a825; }
+    .sender-name.self { color: #7a2e1d; }
+
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      gap: 0.5rem;
+      border-top: 1px solid #eee;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .chat-input button {
+      padding: 0.6rem 1.2rem;
+      background-color: #7a2e1d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* === سير العمل === */
+    .workflow-section {
+      margin-top: 2rem;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      padding: 1rem;
+    }
+
+    .workflow-titles {
+      display: flex;
+      justify-content: space-between;
+      background-color: #7a2e1d;
+      color: white;
+      padding: 0.8rem 1rem;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+
+    .workflow-titles div {
+      flex: 1;
       text-align: center;
       font-weight: bold;
-      font-size: 0.95rem;
-      color: white;
-      margin-bottom: 0.5rem;
+      font-size: 1rem;
     }
 
-    .video-row {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      background: #f0f0f0;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-
-    .tag {
-      padding: 0.4rem 0.8rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      display: inline-block;
-      white-space: nowrap;
-      margin: 0.2rem;
-      color: white;
-    }
-
-    .review-box {
+    .workflow-statuses {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 0.3rem;
+      gap: 1rem;
     }
 
-    .red {
-      background: #ff6666;
+    .status-container {
+      flex: 1;
+      padding: 1rem 0.2rem;
+      text-align: center;
+      border-radius: 10px;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    .orange {
-      background: #e89c4c;
+    .double-badges {
+      flex-direction: row !important;
+      justify-content: center;
+      gap: 0.8rem;
     }
 
-    .green {
-      background: #4CAF50;
+    .badge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: white;
+      white-space: nowrap;
+    }
+
+    .green { background-color: #4caf50; }
+    .red { background-color: #7a2e1d; }
+    .orange { background-color: #d69b33; }
+
+    .timestamp {
+      color: #333;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 900px) {
+      .top-section {
+        flex-direction: column;
+      }
+
+      .workflow-titles,
+      .workflow-statuses {
+        flex-direction: column;
+      }
+
+      .status-container {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-
   {% include 'header.html' %}
 
   <div class="container">
 
-    <!-- عناوين الأعمدة -->
-    <div class="labels-row">
-      <div>الفيديو</div>
-      <div>الممنتج</div>
-      <div>مصمم الثمنيل</div>
-      <div>المراجعة</div>
-      <div>مسؤول النشر</div>
-    </div>
-
-    <!-- بيانات الفيديو -->
-    <div class="video-row">
-      <div>
-        <div class="tag red">مراجعة منتج 3 دقائق</div>
-        <div>12:30 م</div>
+    <!-- البطاقات الثلاث -->
+    <div class="top-section">
+      <div class="card">
+        <div class="card-header">بطاقة إضافية 2</div>
+        <div class="card-body"></div>
       </div>
 
-      <div>
-        <div class="tag orange">جاري المونتاج</div>
-        <div>--:--</div>
+      <div class="card">
+        <div class="card-header">بطاقة إضافية 1</div>
+        <div class="card-body"></div>
       </div>
 
-      <div>
-        <div class="tag green">تم التصميم</div>
-        <div>1:05 م</div>
-      </div>
-
-      <div>
-        <div class="review-box">
-          <div>
-            <div class="tag red">فيديو غير جاهز</div>
-            <div>--:--</div>
+      <!-- الدردشة الجماعية -->
+      <div class="card">
+        <div class="card-header">الدردشة الجماعية</div>
+        <div class="card-body">
+          <div class="chat-messages">
+            {% if messages %}
+              {% for message in messages %}
+                {% with role=message.sender.profile.الوظيفة %}
+                  {% if message.sender == request.user %}
+                    <div class="chat-message my-message {{ role }}">
+                      <div class="sender-name {{ role }}">أنت:</div>
+                      <div class="message-bubble">{{ message.content }}</div>
+                    </div>
+                  {% else %}
+                    <div class="chat-message {{ role }}">
+                      <div class="sender-name {{ role }}">{{ message.sender.profile.get_الوظيفة_display }} - {{ message.sender.username }}</div>
+                      <div class="message-bubble">{{ message.content }}</div>
+                    </div>
+                  {% endif %}
+                {% endwith %}
+              {% endfor %}
+            {% else %}
+              <p style="text-align:center; color:#999;">لا توجد رسائل بعد</p>
+            {% endif %}
           </div>
-          <div>
-            <div class="tag orange">ثمنيل بانتظار المراجعة</div>
-            <div>--:--</div>
-          </div>
+          <form method="POST" class="chat-input">
+            {% csrf_token %}
+            <input type="text" name="content" placeholder="اكتب رسالتك..." required>
+            <button type="submit">إرسال</button>
+          </form>
+
+          <script>
+            window.addEventListener('load', function() {
+              const chatBox = document.querySelector('.chat-messages');
+              if (chatBox) {
+                chatBox.scrollTop = chatBox.scrollHeight;
+              }
+            });
+          </script>
+
         </div>
       </div>
+    </div>
 
-      <div>
-        <div class="tag red">لم يتم النشر</div>
-        <div>--:--</div>
+    <!-- خط سير العمل -->
+    <div class="workflow-section">
+      <div class="workflow-titles">
+        <div>الفيديو</div>
+        <div>الممنتج</div>
+        <div>مصمم الثمنيل</div>
+        <div>المراجعة</div>
+        <div>مسؤول النشر</div>
+      </div>
+
+      <div class="workflow-statuses">
+        <div class="status-container">
+          <div class="status-badge red">مراجعة منتج 3 دقائق</div>
+          <div class="timestamp">12:30 م</div>
+        </div>
+        <div class="status-container">
+          <div class="status-badge orange">جاري المونتاج</div>
+          <div class="timestamp">--:--</div>
+        </div>
+        <div class="status-container">
+          <div class="status-badge green">تم التصميم</div>
+          <div class="timestamp">1:05 م</div>
+        </div>
+        <div class="status-container double-badges">
+          <div class="badge-wrap">
+            <div class="status-badge red">فيديو غير جاهز</div>
+            <div class="timestamp">--:--</div>
+          </div>
+          <div class="badge-wrap">
+            <div class="status-badge orange">ثمنيل بانتظار المراجعة</div>
+            <div class="timestamp">--:--</div>
+          </div>
+        </div>
+        <div class="status-container">
+          <div class="status-badge red">لم يتم النشر</div>
+          <div class="timestamp">--:--</div>
+        </div>
       </div>
     </div>
 
   </div>
-
 </body>
 </html>
-{% else %}
-  <script>window.location.href = "{% url 'login' %}";</script>
 {% endif %}

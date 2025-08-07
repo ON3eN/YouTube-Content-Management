@@ -1,0 +1,163 @@
+{% load static %}
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>الدردشة الجماعية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #fffaf9;
+    }
+
+    .chat-wrapper {
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.07);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background-color: #922f20;
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .chat-box {
+      padding: 1rem;
+      height: 500px;
+      overflow-y: scroll;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      padding: 0.6rem 1rem;
+      margin: 0.4rem 0;
+      border-radius: 12px;
+      width: fit-content;
+      max-width: 75%;
+      word-wrap: break-word;
+      font-size: 0.95rem;
+      color: #222;
+      border: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .own {
+      align-self: flex-start;
+      border-top-right-radius: 0;
+    }
+
+    .other {
+      align-self: flex-end;
+      border-top-left-radius: 0;
+    }
+
+    .sender-name {
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .username {
+      font-weight: bold;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    /* ألوان أسماء المستخدمين */
+    .youtuber    { color: #e53935; }
+    .editor      { color: #8e24aa; }
+    .thumbnailer { color: #1e88e5; }
+    .reviewer    { color: #43a047; }
+    .publisher   { color: #f9a825; }
+    .manager     { color: #424242; }
+
+    /* خلفيات الرسائل */
+    .role-bg.youtuber    { background-color: #ffebee; }
+    .role-bg.editor      { background-color: #f3e5f5; }
+    .role-bg.thumbnailer { background-color: #e3f2fd; }
+    .role-bg.reviewer    { background-color: #e8f5e9; }
+    .role-bg.publisher   { background-color: #fffde7; }
+    .role-bg.manager     { background-color: #eeeeee; }
+
+    .chat-form {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      gap: 1rem;
+      background-color: #ffffff;
+    }
+
+    .chat-form input[type="text"] {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+
+    .chat-form button {
+      background-color: #97352a;
+      color: white;
+      border: none;
+      padding: 0 1.5rem;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-wrapper">
+    <div class="chat-header">الدردشة الجماعية</div>
+
+    <div class="chat-box" id="chatBox">
+      {% for message in messages %}
+        {% with message.sender.profile.الوظيفة as role %}
+          <div class="message role-bg {{ role }} {% if message.sender == user %}own{% else %}other{% endif %}">
+            <div class="sender-name">
+              {% if message.sender == user %}
+                <span class="username {{ role }}">أنت</span>
+              {% else %}
+                <span class="username {{ role }}">
+                  {{ message.sender.profile.get_الوظيفة_display }} - {{ message.sender.username }}
+                </span>
+              {% endif %}
+            </div>
+            <div class="message-content">{{ message.content }}</div>
+          </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+    <form class="chat-form" method="post" action="">
+      {% csrf_token %}
+      <input type="text" name="نص" placeholder="اكتب رسالتك..." required />
+      <button type="submit">إرسال</button>
+    </form>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chatBox');
+    chatBox.scrollTop = chatBox.scrollHeight;
+  </script>
+
+</body>
+</html>
