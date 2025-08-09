@@ -1,11 +1,10 @@
 """
 إعدادات مشروع YouTube_Content_Management باستخدام Django 5.2.4
-
-توثيق الإعدادات:
 https://docs.djangoproject.com/en/5.2/topics/settings/
 """
 
 from pathlib import Path
+import cloudinary  # ← استدعاء مكتبة Cloudinary لربط الإعدادات
 
 # المسار الأساسي للمشروع
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,11 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # مفتاح الأمان (يجب تغييره في الإنتاج)
 SECRET_KEY = 'django-insecure-5+=6#o*dtt^@zha^iyo58f=9tq6_d&!f82i=7syv^guqz2@tox'
 
-# تفعيل وضع التطوير
+# وضع التطوير
 DEBUG = True
 
-# قائمة العناوين المسموح بها (أضفドومينك في الإنتاج)
-ALLOWED_HOSTS = []
+# العناوين المسموح بها
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # التطبيقات المثبتة
 INSTALLED_APPS = [
@@ -28,7 +27,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # التطبيقات المخصصة
+    # تطبيقات خارجية
+    'cloudinary',
+    'cloudinary_storage',
+
+    # تطبيقات مخصصة
     'account',
     'workflow',
     'youtuber',
@@ -43,7 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  # لدعم اللغات
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -58,7 +61,7 @@ ROOT_URLCONF = 'YouTube_Content_Management.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # مجلد القوالب 
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,10 +74,10 @@ TEMPLATES = [
     },
 ]
 
-# تطبيق WSGI
+# WSGI
 WSGI_APPLICATION = 'YouTube_Content_Management.wsgi.application'
 
-# قاعدة البيانات (SQLite مؤقتًا)
+# قاعدة البيانات
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -84,38 +87,47 @@ DATABASES = {
 
 # تحقق من كلمات المرور
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# اللغة والتوقيت
+# اللغة والمنطقة
 LANGUAGE_CODE = 'ar'
 TIME_ZONE = 'Asia/Riyadh'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# الملفات الثابتة (Static)
+# الملفات الثابتة
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # لتجميع static ب collectstatic
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# ملفات الوسائط (Media)
+# ملفات الوسائط (الميديا)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# نوع المفتاح الافتراضي
+# إعدادات Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dehrixr6p',
+    'API_KEY': '315721475167312',
+    'API_SECRET': 'Oe6tSRcilo2WYbkg_7FhELh--bM',
+}
+
+# ربط إعدادات Cloudinary يدويًا ← ضروري عشان يشتغل بدون أخطاء
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET']
+)
+
+# جعل Cloudinary هو المخزن الافتراضي للملفات
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# المفتاح الافتراضي للأعمدة الجديدة
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ مسار تسجيل الدخول الافتراضي عند استخدام @login_required
+# مسار تسجيل الدخول
 LOGIN_URL = '/account/login/'
