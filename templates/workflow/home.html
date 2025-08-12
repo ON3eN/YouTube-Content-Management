@@ -187,9 +187,19 @@
               </div>
 
               <!-- الممنتج -->
+              <!-- الممنتج -->
+              <!-- الممنتج -->
               <div class="status-cell">
+                {% if v.id in edited_ids %}
+                <span class="chip green">تم المونتاج</span>
+                <span class="stamp">تم</span>
+                {% elif v.id in started_ids %}
                 <span class="chip orange">جاري المونتاج</span>
                 <span class="stamp">--:--</span>
+                {% else %}
+                <span class="chip red">لم يتم المونتاج</span>
+                <span class="stamp">--:--</span>
+                {% endif %}
               </div>
 
               <!-- مصمم الثمنيل -->

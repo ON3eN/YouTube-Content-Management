@@ -8,149 +8,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Cairo', sans-serif;
-      background-color: #fffaf9;
+    :root{
+      --accent:#922f20; --accent-glow: rgba(146,47,32,.35);
+      --bg:#fffaf9; --border:#e8e6e5;
+      --pending:#fff3cd;   /* أصفر فاتح */
+      --confirmed:#e8f5e9; /* أخضر فاتح */
+      --rejected:#fdecea;  /* أحمر فاتح */
+
+      --chip-pending:#c58a00;   /* لون كتابة الشارة */
+      --chip-confirmed:#1b7f38;
+      --chip-rejected:#b54545;
+    }
+    body{ margin:0; font-family:'Cairo',sans-serif; background:var(--bg); }
+    .main-wrapper{ max-width:1200px; margin:3rem auto; padding:1rem; }
+
+    /* عناوين العمودين */
+    .titles-wrapper{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+    .section-title{
+      background:#7a2b1d; color:#fff; font-size:1.35rem; font-weight:bold;
+      padding:.9rem 1.6rem; border-radius:12px; text-align:center;
+      box-shadow:0 4px 12px rgba(0,0,0,.06);
     }
 
-    .main-wrapper {
-      max-width: 1200px;
-      margin: 3rem auto;
-      padding: 1rem;
+    /* تخطيط عمودين */
+    .container{ display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+    .left-col { display:block; }                 /* فيديوهات اليوتيوبر */
+    .right-col{ display:flex; flex-direction:column; gap:1.5rem; } /* رفع + حالة المراجعة */
+
+    .card{
+      background:#fff; border-radius:16px; box-shadow:0 4px 16px rgba(0,0,0,.06);
+      padding:2rem; box-sizing:border-box; position:relative;
     }
 
-    .titles-wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+    /* رفع الممنتج */
+    .upload-box{
+      width:100%; border:2px dashed #bbb; border-radius:14px; margin-bottom:1rem;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      cursor:pointer; transition:background-color .3s; text-align:center; padding:2rem 1rem;
+    }
+    .upload-box:hover{ background:#f7f7f7; }
+    .upload-box img{ width:50px; opacity:.85; margin-bottom:.6rem; }
+    input[type="file"]{ display:none; }
+    .btn-submit{
+      background:var(--accent); color:#fff; border:none; font-size:1.05rem; font-weight:bold;
+      padding:.85rem 2.2rem; border-radius:10px; cursor:pointer; width:100%;
+      transition:opacity .2s ease, background .2s ease;
+    }
+    .btn-submit[disabled]{ opacity:.55; cursor:not-allowed; }
+    .btn-submit:hover:not([disabled]){ background:#7a2418; }
+    .select-wrap{ margin-bottom:1rem; }
+    .select-wrap label{ display:block; margin-bottom:.35rem; font-weight:700; color:#5a4a48; }
+    select{ width:100%; padding:.8rem .9rem; border-radius:10px; border:1px solid #ccc; font-family:'Cairo',sans-serif; background:#fff; }
+
+    /* فيديوهات اليوتيوبر (يسار) */
+    .video-card{ position:relative; padding:1rem; border:1px solid var(--border); border-radius:12px; margin-bottom:1.2rem; background:#fff; }
+    .video-preview-box{ position:relative; height:220px; width:100%; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#faf7f6; }
+    .eye-icon{ font-size:1.6rem; cursor:pointer; position:absolute; color:#7a2b1d; transition:all .3s ease; top:50%; right:50%; transform:translate(50%,-50%); z-index:10; }
+    .eye-icon.top-right{ top:10px!important; right:10px!important; transform:none!important; }
+    .video-preview-box video{ width:100%; height:100%; object-fit:cover; border-radius:10px; animation:fadeIn .35s ease; }
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+    .video-meta{ font-size:.95rem; color:#333; margin-top:1rem; line-height:1.9; }
+    .video-meta .extras{ color:#6a5d5f; background:#fff5f3; border:1px solid #f0d8d3; border-radius:8px; padding:.35rem .6rem; display:inline-block; }
+    .download-btn{ position:absolute; bottom:12px; left:12px; background:var(--accent); color:#fff; border:none; border-radius:999px; padding:.45rem 1rem; font-size:.92rem; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.12); transition:transform .15s ease, background .2s ease; }
+    .download-btn:hover{ background:#7b251a; transform:translateY(-1px); }
+
+    /* حالة المراجعة (بطاقة واحدة) */
+    .review-title{ font-weight:800; font-size:1.12rem; color:#632419; margin-bottom:1rem; }
+
+    .review-list{ display:flex; flex-direction:column; gap:.9rem; }
+
+    .review-item{
+      border:1px dashed #d8d0cd; border-radius:14px; padding:0.9rem 1rem;
+      background:#fefefe; box-shadow:0 2px 8px rgba(0,0,0,.03);
+    }
+    .review-item.pending{  background:var(--pending);   border-color:#ead79b; }
+    .review-item.confirmed{background:var(--confirmed); border-color:#aad0b0; }
+    .review-item.rejected{ background:var(--rejected);  border-color:#e0a3a3; }
+
+    .ri-top{ display:flex; align-items:center; gap:.75rem; }
+    .ri-title{
+      font-weight:800; color:#3b2e2e; flex:1; line-height:1.5;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .ri-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .review-item.pending  .ri-dot{ background:#e0b300; }
+    .review-item.confirmed .ri-dot{ background:#35a15a; }
+    .review-item.rejected  .ri-dot{ background:#d06767; }
+
+    .state-chip{
+      padding:.25rem .6rem; border-radius:999px; font-size:.85rem; font-weight:800;
+      background:#fff; border:1px solid #eee;
+    }
+    .state-chip.pending{ color:var(--chip-pending); border-color:#f2d889; }
+    .state-chip.confirmed{ color:var(--chip-confirmed); border-color:#b7dfc1; }
+    .state-chip.rejected{ color:var(--chip-rejected); border-color:#efc0c0; }
+
+    .review-note{ margin-top:.5rem; font-size:.9rem; color:#6c4a4a; background:#fff; border:1px solid #ecdede; padding:.55rem .65rem; border-radius:10px; }
+
+    /* تجاوب */
+    @media (max-width:900px){
+      .container{ grid-template-columns:1fr; }
+      .left-col, .right-col{ grid-column:1; }
     }
 
-    .section-title {
-      background-color: #922f20;
-      color: white;
-      font-size: 1.3rem;
-      font-weight: bold;
-      padding: 0.8rem 1.5rem;
-      border-radius: 10px;
-      text-align: center;
-      flex: 1;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-
-    .container {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .card {
-      background: #f5f5f5;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-      padding: 2rem;
-      flex: 1 1 500px;
-      box-sizing: border-box;
-    }
-
-    .video-box {
-      position: relative;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 1rem 1.2rem 2.5rem;
-      margin-bottom: 1.2rem;
-      background-color: #ffffff;
-      transition: background-color 0.3s;
-    }
-
-    .video-box:hover {
-      background-color: #f8f8f8;
-    }
-
-    .video-box p {
-      margin: 0.4rem 0;
-      font-size: 1rem;
-      color: #333;
-    }
-
-    .video-box strong {
-      color: #000;
-    }
-
-    .download-btn {
-      position: absolute;
-      bottom: 1rem;
-      left: 1rem;
-      background-color: #922f20;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 0.5rem 1.1rem;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.3s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .download-btn:hover {
-      background-color: #7b251a;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    input[type="file"],
-    button[type="submit"] {
-      width: 100%;
-      padding: 0.9rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    input[type="file"] {
-      border: 1px solid #ccc;
-      background-color: #fdfdfd;
-      color: #555;
-    }
-
-    button[type="submit"] {
-      background-color: #922f20;
-      color: white;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #7b251a;
-    }
-
-    .success-msg {
-      color: green;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    @media (max-width: 900px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .titles-wrapper {
-        flex-direction: column;
-      }
-    }
+    .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:9999; display:none; align-items:center; justify-content:center; }
+    .overlay.show{ display:flex; }
+    .overlay .box{ background:#fff; padding:1rem 1.2rem; border-radius:10px; font-weight:700; color:#333; }
   </style>
 </head>
 <body>
@@ -159,52 +122,203 @@
 
   <div class="main-wrapper">
 
-    <!-- العنوانين جنب بعض -->
     <div class="titles-wrapper">
       <div class="section-title">فيديوهات من اليوتيوبر</div>
-      <div class="section-title">رفع الفيديو المُمنتجة</div>
+      <div class="section-title">رفع الفيديو المُمنتج</div>
     </div>
 
-    <!-- البطاقتين جنب بعض -->
     <div class="container">
 
-      <!-- بطاقة الفيديوهات الجديدة -->
-      <div class="card">
-        <div class="video-box">
-          <p><strong>عنوان:</strong> مراجعة منتج جديد</p>
-          <p><strong>المدة:</strong> 5:35 دقائق</p>
-          <p><strong>تاريخ الإرسال:</strong> 3 أغسطس</p>
-          <a href="{% static 'videos/test1.mp4' %}" download>
-            <button class="download-btn">تنزيل</button>
-          </a>
-        </div>
+      <!-- يسار: فيديوهات من اليوتيوبر (مستثنى منها ما رُفع للمراجعة) -->
+      <div class="left-col">
+        <div class="card">
+          {% if youtuber_videos %}
+            {% for v in youtuber_videos %}
+              <div class="video-card">
+                <div class="video-preview-box" id="pv{{ v.id }}">
+                  <div class="eye-icon" id="eye{{ v.id }}" onclick="toggleVideo('{{ v.video_url }}','{{ v.id }}')">👁️</div>
+                </div>
+                <p class="video-meta">
+                  🎬 <strong>العنوان:</strong> {{ v.title }}<br>
+                  🕒 <strong>بتاريخ:</strong> {% if v.uploaded_at %}{{ v.uploaded_at|date:"Y-m-d H:i" }}{% else %}-{% endif %}<br>
+                  {% if v.extras %}<span class="extras">📝 ملاحظات: {{ v.extras }}</span>{% endif %}
+                </p>
 
-        <div class="video-box">
-          <p><strong>عنوان:</strong> فلوق تسوق</p>
-          <p><strong>المدة:</strong> 7:20 دقائق</p>
-          <p><strong>تاريخ الإرسال:</strong> 1 أغسطس</p>
-          <a href="{% static 'videos/test2.mp4' %}" download>
-            <button class="download-btn">تنزيل</button>
-          </a>
+                <button
+                  type="button"
+                  class="download-btn"
+                  data-vid="{{ v.id }}"
+                  data-url="{{ v.video_url }}"
+                  data-filename="{{ v.file_name }}"
+                  onclick="downloadWithProgress(this)"
+                >تنزيل</button>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="video-meta">لا يوجد فيديوهات من اليوتيوبر حالياً.</p>
+          {% endif %}
         </div>
       </div>
 
-      <!-- بطاقة رفع الفيديوهات -->
-      <div class="card">
-        {% if success %}
-          <div class="success-msg">✅ تم رفع الفيديو بنجاح: {{ filename }}</div>
-        {% endif %}
+      <!-- يمين: رفع + حالة المراجعة -->
+      <div class="right-col">
 
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          <input type="file" name="video" accept="video/*" required />
-          <button type="submit">رفع الفيديو</button>
-        </form>
+        <!-- رفع فيديو الممنتج -->
+        <div class="card">
+          <form id="editorUploadForm" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <label class="upload-box" for="videoInput" aria-label="اختر ملف الفيديو المُمنتج">
+              <img src="{% static 'icons/upload-icon.png' %}" alt="Upload Icon" />
+              <p id="uploadText">اضغط هنا لاختيار الفيديو المُمنتج</p>
+              <input type="file" name="video" id="videoInput" accept="video/*" required>
+            </label>
+
+            <div class="select-wrap">
+              <label for="sourceSelect">اختر الفيديو الأصلي من اليوتيوبر (إلزامي)</label>
+              <select id="sourceSelect" name="source_video_id" required>
+                <option value="" selected disabled>— اختر الفيديو —</option>
+                {% for v in youtuber_videos %}
+                  <option value="{{ v.id }}">{{ v.title }}{% if v.uploaded_at %} — {{ v.uploaded_at|date:"Y-m-d H:i" }}{% endif %}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit" disabled>رفع الفيديو</button>
+          </form>
+        </div>
+
+        <!-- بطاقة: حالة المراجعة -->
+        <div class="card">
+          <div class="review-title">حالة المراجعة</div>
+
+          {% if review_items %}
+            <div class="review-list">
+              {% for it in review_items %}
+                <div class="review-item {{ it.status_css }}">
+                  <div class="ri-top">
+                    <span class="ri-dot"></span>
+                    <div class="ri-title">
+                      {% firstof it.source_video.title it.title it.file_name %}
+                    </div>
+                    <span class="state-chip {{ it.status_css }}">
+                      {% if it.status == 'pending' %}تحت المراجعة
+                      {% elif it.status == 'confirmed' %}مؤكد
+                      {% else %}مرفوض{% endif %}
+                    </span>
+                  </div>
+
+                  {% if it.status == 'rejected' and it.review_note %}
+                    <div class="review-note">الملاحظة: {{ it.review_note }}</div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="review-list">
+              <div class="review-item pending">
+                <div class="ri-top">
+                  <span class="ri-dot"></span>
+                  <div class="ri-title">لا توجد عناصر حتى الآن</div>
+                  <span class="state-chip pending">—</span>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
       </div>
-
     </div>
-
   </div>
+
+  <div class="overlay" id="ol"><div class="box" id="olmsg">جاري الرفع...</div></div>
+
+  <script>
+    const START_PROGRESS_URL_TEMPLATE = "{% url 'editor:start_progress' 0 %}";
+
+    const fileInput  = document.getElementById('videoInput');
+    const selectEl   = document.getElementById('sourceSelect');
+    const submitBtn  = document.getElementById('submitBtn');
+
+    function toggleSubmitState(){ submitBtn.disabled = !(fileInput.files.length && selectEl.value); }
+    fileInput.addEventListener('change', () => {
+      const t = document.getElementById('uploadText');
+      if (fileInput.files.length) t.textContent = 'تم اختيار: ' + fileInput.files[0].name;
+      toggleSubmitState();
+    });
+    selectEl.addEventListener('change', toggleSubmitState);
+
+    function toggleVideo(url, id){
+      const box = document.getElementById('pv'+id);
+      const icon = document.getElementById('eye'+id);
+      const v = box.querySelector('video');
+      if (v){ v.remove(); icon.classList.remove('top-right'); }
+      else{
+        const vid = document.createElement('video');
+        vid.src = url; vid.controls = true; vid.autoplay = true;
+        box.insertBefore(vid, icon);
+        icon.classList.add('top-right');
+      }
+    }
+
+    async function downloadWithProgress(btn){
+      const vidId    = btn.dataset.vid;
+      const url      = btn.dataset.url;
+      const filename = btn.dataset.filename || 'video.mp4';
+      const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      try{
+        const postUrl = START_PROGRESS_URL_TEMPLATE.replace(/0\/?$/, vidId + "/");
+        await fetch(postUrl, { method: "POST", headers: { "X-CSRFToken": csrf }});
+      }catch(_){}
+
+      try{
+        const downloadUrl = url + (url.includes('?') ? '&' : '?') + 'fl_attachment=' + encodeURIComponent(filename);
+        const resp = await fetch(downloadUrl, { mode: 'cors' });
+        if(!resp.ok) throw new Error('HTTP ' + resp.status);
+        const blob = await resp.blob();
+        const objUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objUrl; a.download = filename;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(objUrl);
+      }catch(e){
+        alert('تعذر تنزيل الملف: ' + e.message);
+      }
+    }
+
+    const form = document.getElementById('editorUploadForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = fileInput.files[0];
+      const source = selectEl.value;
+      if (!source){ alert('اختر الفيديو الأصلي قبل الرفع.'); return; }
+      if (!file){ alert('اختر ملف الفيديو.'); return; }
+
+      const ol = document.getElementById('ol');
+      const msg = document.getElementById('olmsg');
+      ol.classList.add('show'); msg.textContent = 'جاري الرفع...';
+
+      const fd = new FormData(form);
+      try{
+        const r = await fetch("", {
+          method: "POST",
+          headers: { "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value },
+          body: fd
+        });
+        const data = await r.json();
+        if (data.success){
+          msg.textContent = 'تم الرفع بنجاح ✔';
+          setTimeout(()=> window.location.reload(), 900);
+        }else{
+          msg.textContent = 'حدث خطأ: ' + (data.error || 'فشل غير معروف');
+          setTimeout(()=> ol.classList.remove('show'), 1200);
+        }
+      }catch(err){
+        msg.textContent = 'فشل الاتصال بالخادم.';
+        setTimeout(()=> ol.classList.remove('show'), 1200);
+      }
+    });
+  </script>
 
 </body>
 </html>
