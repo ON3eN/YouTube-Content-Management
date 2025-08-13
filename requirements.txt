@@ -1,0 +1,6 @@
+﻿Django==5.2.4
+cloudinary
+django-cloudinary-storage
+Pillow
+python-dotenv
+tzdata
