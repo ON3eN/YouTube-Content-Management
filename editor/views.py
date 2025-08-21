@@ -5,13 +5,15 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
-from django.views.decorators.http import require_POST
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_protect
 
+import logging
 import cloudinary.uploader
 
 from .models import EditorRendered, EditorProgress
+
+logger = logging.getLogger(__name__)
 
 
 # ---------- مساعد: الحصول على موديل فيديوهات اليوتيوبر ----------
@@ -62,7 +64,7 @@ def tasks_view(request):
             - فيديوهات اليوتيوبر (مع استثناء ما رُفع للمراجعة).
             - بطاقة "حالة المراجعة" من EditorRendered.
     POST -> يرفع فيديو الممنتج إلى Cloudinary، وينشئ سجل EditorRendered بالحالة pending.
-    المتوقّع من الواجهة: إرسال video + source_video_id.
+            المتوقّع: إرسال video + source_video_id.
     """
     VideoModel = _get_youtuber_video_model()
     if not VideoModel:
@@ -109,6 +111,7 @@ def tasks_view(request):
             public_id = up_res.get("public_id")
 
             if not secure_url or not public_id:
+                logger.error("Cloudinary upload missing url/public_id: %s", up_res)
                 return JsonResponse(
                     {"success": False, "error": "فشل الرفع إلى Cloudinary."},
                     status=500,
@@ -135,6 +138,7 @@ def tasks_view(request):
             )
 
         except Exception as e:
+            logger.exception("Upload failed")
             return JsonResponse(
                 {"success": False, "error": f"خطأ أثناء الرفع: {e}"},
                 status=500,
@@ -195,6 +199,7 @@ def upload_video_view(request):
                 }
             )
         except Exception as e:
+            logger.exception("upload_video_view failed")
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
     return HttpResponseBadRequest("استخدم POST مع حقل video.")
@@ -203,17 +208,18 @@ def upload_video_view(request):
 # ---------- تسجيل “جاري المونتاج” عند الضغط على زر تنزيل ----------
 @require_POST
 @login_required
-def start_progress(request, vid_id):
+def start_progress(request, source_id):
     """
     تُستدعى عبر AJAX عند ضغط الممنتج زر "تنزيل" للفيديو الأصلي.
     تنشئ/تثبت وجود سجل EditorProgress لتظهر الحالة 'جاري المونتاج' في الصفحة الرئيسية.
     """
     try:
-        EditorProgress.objects.get_or_create(
+        obj, created = EditorProgress.objects.get_or_create(
             user=request.user,
-            source_video_id=vid_id,
+            source_video_id=source_id,
             defaults={"started_at": timezone.now()},
         )
-        return JsonResponse({"ok": True})
+        return JsonResponse({"ok": True, "created": created})
     except Exception as e:
+        logger.exception("start_progress failed for source_id=%s", source_id)
         return JsonResponse({"ok": False, "error": str(e)}, status=500)
